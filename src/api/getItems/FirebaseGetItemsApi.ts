@@ -5,10 +5,6 @@ import { collection, getDocs, getFirestore, limit, orderBy, query, where } from 
 import FirestoreUtils from "../../utils/FirestoreUtils";
 
 export default class FirebaseGetItemsApi extends GetItemsApi {
-    get genericErrorMessage(): string {
-        return "Failed to get items";
-    }
-
     constructor() {
         super();
         FirestoreUtils.adjustConverter(this.converter);

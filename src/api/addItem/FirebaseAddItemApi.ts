@@ -6,10 +6,6 @@ import FirestoreUtils from "../../utils/FirestoreUtils";
 import { v4 } from "uuid";
 
 export default class FirebaseAddItemApi extends AddItemApi {
-    get genericErrorMessage(): string {
-        return "Failed to add item";
-    }
-
     constructor() {
         super();
         FirestoreUtils.adjustConverter(this.converter);

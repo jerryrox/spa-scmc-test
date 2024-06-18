@@ -1,37 +1,60 @@
 import { Color } from "jrx-ts";
 import VariantProvider from "./VariantProvider";
-import { createFirebaseApiContainer } from "../../api/ApiContainer";
-import { initializeApp } from "firebase/app";
+import { IApis, createAzureApiContainer } from "../../api/ApiContainer";
+import CloudType from "../../models/CloudType";
+import { PublicClientApplication } from "@azure/msal-browser";
+import { AwilixContainer } from "awilix";
+import VariantType from "../../models/VariantType";
+
+let azureApp: PublicClientApplication | undefined = undefined;
 
 export default class BetaVariantProvider extends VariantProvider {
     private primaryCol = Color.hex("#ad5072");
-    private apiContainer = createFirebaseApiContainer();
+    private apiContainer: AwilixContainer<IApis>;
 
-    get appName() {
+    get appName(): string {
         return "Beta App 👍";
     }
 
-    get organizationName() {
+    get organizationName(): string {
         return "Beta Org 👍";
     }
 
-    get primaryColor() {
+    get primaryColor(): Color {
         return this.primaryCol;
     }
 
-    get apis() {
+    get variantType(): VariantType {
+        return "beta";
+    }
+
+    get cloudType(): CloudType {
+        return "azure";
+    }
+
+    get cloudApp(): any {
+        return azureApp;
+    }
+
+    get apis(): AwilixContainer<IApis> {
         return this.apiContainer;
     }
 
     constructor() {
         super();
-        initializeApp({
-            apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-            authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-            projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-            storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-            messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-            appId: import.meta.env.VITE_FIREBASE_APP_ID,
-        });
+        if(azureApp === undefined) {
+            azureApp = new PublicClientApplication({
+                auth: {
+                    clientId: import.meta.env.VITE_AZURE_CLIENT_ID,
+                    authority: import.meta.env.VITE_AZURE_AUTHORITY,
+                    redirectUri: import.meta.env.VITE_AZURE_REDIRECT_URI,
+                },
+                cache: {
+                    cacheLocation: "localStorage",
+                    storeAuthStateInCookie: true,
+                },
+            });
+        }
+        this.apiContainer = createAzureApiContainer(azureApp);
     }
 }

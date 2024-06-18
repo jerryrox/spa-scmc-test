@@ -12,6 +12,10 @@ export default abstract class GetItemsApi extends BaseApi<IItem[]> {
     protected converter = new ItemConverter();
     protected options: IOptions = {};
 
+    get genericErrorMessage(): string {
+        return "Failed to get items.";
+    }
+
     setOptions(options: IOptions) {
         this.options = options;
     }

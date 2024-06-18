@@ -3,10 +3,6 @@ import RegisterApi from "./RegisterApi";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 
 export default class FirebaseRegisterApi extends RegisterApi {
-    get genericErrorMessage(): string {
-        return "Failed to register.";
-    }
-
     protected async requestInternal(): Promise<AsyncResponse<string>> {
         if (this.email === undefined) {
             return AsyncResponse.failed("Email is not set.");
